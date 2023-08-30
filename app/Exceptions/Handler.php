@@ -27,4 +27,25 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Render.
+     */
+    public function render($request, Throwable $exception)
+    {
+        /**
+         * Eğer API'de bir hata meydana geliyorsa, bunu kullanıcılara hata mesajı dönütü olarak
+         * gönderiyoruz.
+         */
+        if ($request->is('api/*')) 
+        {
+            return response()->json([
+                'status' => false,
+                'message' => 'Beklenmeyen bir hata oluştu.',
+                'exception' => $exception->getMessage(),
+            ], 500);
+        }
+
+        return parent::render($request, $exception);
+    }
 }
